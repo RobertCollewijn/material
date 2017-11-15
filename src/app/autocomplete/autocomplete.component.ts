@@ -13,9 +13,11 @@ export class AutocompleteComponent implements OnInit {
   myControl = new FormControl();
 
   options = [
-    'One',
-    'Two',
-    'Three'
+    'One a',
+    'Two b',
+    'Three c',
+    'Four d',
+    'Five e'
   ];
 
   filteredOptions: Observable<string[]>;
@@ -26,11 +28,21 @@ export class AutocompleteComponent implements OnInit {
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges
       .startWith('')
-      .map(val => this.filter(val));
+      .map(val => this.multipleFilter(val));
+  }
+
+  searchForTerm(option, term) {
+    return option.toLowerCase().indexOf(term) >= 0
+  }
+
+  multipleFilter(val: string): string[] {
+    let searchTerms = val.toLowerCase().split(" ");
+    return this.options.filter(option =>
+      searchTerms.every(term => this.searchForTerm(option, term)))
   }
 
   filter(val: string): string[] {
     return this.options.filter(option =>
-      option.toLowerCase().indexOf(val.toLowerCase()) === 0);
+      option.toLowerCase().indexOf(val) >= 0);
   }
 }
